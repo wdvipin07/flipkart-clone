@@ -1,12 +1,16 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import session from "express-session";
 import passport from "passport";
 import LocalStrategy from "passport-local";
-// import "./passport-config.js";
+
+// File path setup (for ES Modules)
+import path from "path";
+import { fileURLToPath } from "url";
 
 //import Models
 import User from "./models/User.js";
@@ -17,19 +21,23 @@ import userRouter from "./routes/user.js";
 import productRouter from "./routes/product.js";
 import paymentRouter from "./routes/payment.js";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
 app.use(express.json());
 
+// CORS setup
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend ka origin
+    origin: process.env.CLIENT_ORIGIN || "http://localhost:5173", // frontend origin
     credentials: true,
   })
 );
 
+// MongoDB connection
 const dbUrl = process.env.MONGO_URL;
-
 main()
   .then(() => {
     console.log("Connected to MongoDB");
@@ -37,13 +45,14 @@ main()
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err.message);
   });
-// Initialize the database
+
 async function main() {
-  await mongoose.connect(process.env.MONGO_URL);
+  await mongoose.connect(dbUrl);
 }
 
+// Session configuration
 const sessionOption = {
-  secret: process.env.SECRET,
+  secret: process.env.SECRET || "keyboard cat",
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -52,21 +61,29 @@ const sessionOption = {
     httpOnly: true,
   },
 };
-//session
 app.use(session(sessionOption));
 
-//authentication
+// Passport authentication
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Router for All Pages
+// API Routes
 app.use("/", userRouter);
 app.use("/", productRouter);
 app.use("/", paymentRouter);
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+// React Frontend Serve Code (For Deployment)
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
+});
+
+// Server Listen
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
