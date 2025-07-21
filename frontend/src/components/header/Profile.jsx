@@ -49,7 +49,7 @@ function Profile({ account }) {
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:3000/logout", {
+      await axios.get("http://localhost:3000/api/users/logout", {
         withCredentials: true,
       });
       setAccount(""); // user ko logout karna (context update)

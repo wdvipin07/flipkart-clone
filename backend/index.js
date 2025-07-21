@@ -71,9 +71,9 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // API Routes
-app.use("/", userRouter);
-app.use("/", productRouter);
-app.use("/", paymentRouter);
+app.use("/api/users", userRouter);
+app.use("/api/products", productRouter);
+app.use("/api/payments", paymentRouter);
 
 // React Frontend Serve Code (For Deployment)
 app.use(express.static(path.join(__dirname, "../frontend/build")));

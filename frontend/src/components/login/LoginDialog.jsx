@@ -150,7 +150,7 @@ function LoginDialog({ open, setOpen }) {
 
   const signupUser = async (signup) => {
     try {
-      await axios.post("http://localhost:3000/signup", signup, {
+      await axios.post("http://localhost:3000/api/users/signup", signup, {
         withCredentials: true,
       });
 
@@ -173,7 +173,7 @@ function LoginDialog({ open, setOpen }) {
 
   const loginUser = async () => {
     try {
-      await axios.post("http://localhost:3000/login", login, {
+      await axios.post("http://localhost:3000/api/users/login", login, {
         withCredentials: true,
       });
       setShouldCloseDialog(true);
