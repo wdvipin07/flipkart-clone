@@ -12,11 +12,11 @@ import LocalStrategy from "passport-local";
 import path from "path";
 import { fileURLToPath } from "url";
 
-//import Models
+// Import Models
 import User from "./models/User.js";
 import Product from "./models/Product.js";
 
-//import routes
+// Import routes
 import userRouter from "./routes/user.js";
 import productRouter from "./routes/product.js";
 import paymentRouter from "./routes/payment.js";
@@ -31,7 +31,7 @@ app.use(express.json());
 // CORS setup
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN || "http://localhost:5173", // frontend origin
+    origin: process.env.CLIENT_ORIGIN || "http://localhost:5173", // Frontend origin (change accordingly)
     credentials: true,
   })
 );
@@ -71,16 +71,20 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // API Routes
-app.use("/", userRouter);
-app.use("/", productRouter);
-app.use("/", paymentRouter);
+app.use("/api/users", userRouter);
+app.use("/api/products", productRouter);
+app.use("/api/payments", paymentRouter);
 
 // React Frontend Serve Code (For Deployment)
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+if (process.env.NODE_ENV === "production") {
+  // Serve the static files from React's production build
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
-});
+  // Catch-all route to serve index.html for any request
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
+  });
+}
 
 // Server Listen
 const PORT = process.env.PORT || 3000;

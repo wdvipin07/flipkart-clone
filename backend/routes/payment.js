@@ -8,5 +8,5 @@ import {
 const router = express.Router();
 
 router.post("/create-order", addPaymentGateway);
-router.get("/status", addStatus);
+router.post("/status", addStatus);
 export default router;

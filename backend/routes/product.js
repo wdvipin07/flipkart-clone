@@ -8,7 +8,7 @@ import {
 //Router Object
 const router = express.Router();
 
-router.get("/products", productsController);
-router.get("/product/:id", individualProduct);
+router.get("/", productsController);
+router.get("/:id", individualProduct);
 
 export default router;

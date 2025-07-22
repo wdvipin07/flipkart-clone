@@ -11,7 +11,7 @@ const MERCHANT_BASE_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox";
 const MERCHANT_STATUS_URL =
   "https://api-preprod.phonepe.com/apis/pg-sandbox/status";
 //redirecturl
-const redirectUrl = "http://localhost:3000/status";
+const redirectUrl = "http://localhost:3000/api/payments/status";
 
 const successUrl = "http://localhost:5173/";
 const failureUrl = "http://localhost:5173/payment-failure";
