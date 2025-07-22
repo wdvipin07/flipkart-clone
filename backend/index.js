@@ -7,6 +7,7 @@ import cors from "cors";
 import session from "express-session";
 import passport from "passport";
 import LocalStrategy from "passport-local";
+import MongoStore from "connect-mongo";
 
 // File path setup (for ES Modules)
 import path from "path";
@@ -50,11 +51,24 @@ async function main() {
   await mongoose.connect(dbUrl);
 }
 
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 24 * 3600,
+});
+
+store.on("error", () => {
+  console.log("ERROR in MONGO SESSION STORE", err);
+});
+
 // Session configuration
 const sessionOption = {
+  store,
   secret: process.env.SECRET || "keyboard cat",
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
