@@ -6,14 +6,13 @@
     "node": "v22.11.0"
   },
   "scripts": {
-    "start": "npm run backend-start",  
-    "backend-start": "cd backend && npm install && npm run start",  
-    "frontend-start": "cd frontend && npm install && npm start", 
-    "build": "npm run backend-build && npm run frontend-build", 
-    "backend-build": "cd backend && npm install && npm run build",  
-    "frontend-build": "cd frontend && npm install && npm run build", 
-    "heroku-postbuild": "npm run build"  
+    "start": "npm run backend-start",
+    "backend-start": "cd backend && npm install && npm run start",
+    "frontend-start": "cd frontend && npm install && npm start",
+    "build": "npm run backend-build && npm run frontend-build",
+    "backend-build": "cd backend && npm install && npm run build",
+    "frontend-build": "cd frontend && npm install && npm run build",
+    "heroku-postbuild": "npm run build"
   },
-  "dependencies": {
-     }
+  "dependencies": {}
 }
