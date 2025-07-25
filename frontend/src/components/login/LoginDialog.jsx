@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 
 import { DataContext } from "../../context/DataProvider";
-// import { Snackbar, Alert } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -26,7 +25,6 @@ const Container = styled(Box)(({ theme }) => ({
 const LeftContainer = styled(Box)(({ theme }) => ({
   background:
     "#2874f0 url(https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/login_img_c4a81e.png) center 85% no-repeat",
-
   width: "35%",
   height: "100%",
   padding: "20px",
@@ -44,24 +42,13 @@ const TextLogin = styled(Typography)`
 const RightContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  padding: "25px 35px",
+  padding: "15px 35px",
   flex: 1,
-  gap: "20px",
-
-  "& > div": {
-    marginTop: "10px",
-  },
-  "& > button": {
-    marginTop: "10px",
-  },
-  "& > p": {
-    marginTop: "10px",
-  },
-
+  // gap: "0px",
+  "& > div": { marginTop: "10px" },
+  "& > button": { marginTop: "10px" },
+  "& > p": { marginTop: "10px" },
   [theme.breakpoints.down("sm")]: {
-    "& > div": { marginTop: "10px" },
-    "& > p": { marginTop: "0px" },
-    "& > button": { marginTop: "5px" },
     padding: "10px 20px",
   },
 }));
@@ -90,8 +77,7 @@ const RequestBtn = styled(Button)`
   font-weight: bold;
 `;
 
-//this object for toggleing form value
-let accountInitialValue = {
+const accountInitialValue = {
   login: {
     view: "login",
     heading: "Login",
@@ -100,11 +86,18 @@ let accountInitialValue = {
   signup: {
     view: "signup",
     heading: "Looks like you're new here",
-    subHeading: "Signup with you mobile get started",
+    subHeading: "Signup with your mobile to get started",
   },
 };
 
-//object for signup
+const StyledHelperText = styled(Typography)({
+  color: "red",
+  fontSize: "12px",
+  minHeight: "18px",
+  marginTop: "2px",
+  fontFamily: "monospace",
+});
+
 const signupInitialValue = {
   username: "",
   email: "",
@@ -112,53 +105,96 @@ const signupInitialValue = {
   password: "",
 };
 
-//object for signup
 const loginInitialValue = {
-  email: "",
+  username: "",
   password: "",
 };
 
-//login Dailog Render function
 function LoginDialog({ open, setOpen }) {
-  //state for viewing the login form
-  let [account, toggleAccount] = useState(accountInitialValue.login);
+  const [account, toggleAccount] = useState(accountInitialValue.login);
   const [signup, setSignup] = useState(signupInitialValue);
   const [login, setLogin] = useState(loginInitialValue);
   const { setAccount } = useContext(DataContext);
-  const [shouldCloseDialog, setShouldCloseDialog] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleClose = () => {
     setOpen(false);
+    setLogin(loginInitialValue);
+    setSignup(signupInitialValue);
     toggleAccount(accountInitialValue.login);
+    setErrors({});
   };
 
   const toggleSignup = () => {
     toggleAccount(accountInitialValue.signup);
   };
 
-  //login form
   const loginChange = (e) => {
-    e.preventDefault();
-    setLogin({ ...login, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setLogin({ ...login, [name]: value });
   };
 
-  //function for the Onchange
   const inputChange = (e) => {
-    e.preventDefault();
-    setSignup({ ...signup, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let errorMsg = "";
+
+    switch (name) {
+      case "username":
+        if (value.trim() === "") errorMsg = "Username is required";
+        break;
+      case "email":
+        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value))
+          errorMsg = "Enter a valid email";
+        break;
+      case "mobile":
+        if (!/^\d{0,10}$/.test(value)) {
+          errorMsg = "Only digits allowed";
+        } else if (value.length === 10) {
+          errorMsg = "";
+        }
+        break;
+      case "password":
+        if (value.length < 6)
+          errorMsg = "Password must be at least 6 characters";
+        break;
+      default:
+        break;
+    }
+
+    setSignup({ ...signup, [name]: value });
+    setErrors({ ...errors, [name]: errorMsg });
   };
 
-  const signupUser = async (signup) => {
-    try {
-      await axios.post("http://localhost:3000/api/users/signup", signup, {
-        withCredentials: true,
-      });
+  const validateAllFields = () => {
+    let tempErrors = {};
+    if (signup.username.trim() === "")
+      tempErrors.username = "Username is required";
+    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(signup.email))
+      tempErrors.email = "Enter a valid email";
+    if (!/^\d{10}$/.test(signup.mobile))
+      tempErrors.mobile = "Enter a valid 10-digit mobile number";
+    if (signup.password.length < 6)
+      tempErrors.password = "Password must be at least 6 characters";
 
-      setSignup(signupInitialValue); // clear form
-      setShouldCloseDialog(true);
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  const signupUser = async () => {
+    if (!validateAllFields()) return;
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/users/signup",
+        signup,
+        {
+          withCredentials: true,
+        }
+      );
+
+      setSignup(signupInitialValue);
       setAccount(signup.username);
-      //message
-      toast.success(response.message, {
+      toast.success("User Registered successfully", {
         onClose: () => {
           setOpen(false);
           toggleAccount(accountInitialValue.login);
@@ -173,12 +209,14 @@ function LoginDialog({ open, setOpen }) {
 
   const loginUser = async () => {
     try {
-      await axios.post("http://localhost:3000/api/users/login", login, {
-        withCredentials: true,
-      });
-      setShouldCloseDialog(true);
+      const response = await axios.post(
+        "http://localhost:3000/api/users/login",
+        login,
+        {
+          withCredentials: true,
+        }
+      );
       setAccount(login.username);
-      //message
       toast.success("User Login Successfully", {
         onClose: () => {
           setOpen(false);
@@ -191,75 +229,90 @@ function LoginDialog({ open, setOpen }) {
   };
 
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        PaperProps={{ sx: { maxWidth: "unset" } }}
-      >
-        <Container>
-          <LeftContainer>
-            <h2 style={{ color: "white" }}>{account.heading}</h2>
-            <TextLogin>{account.subHeading}</TextLogin>
-          </LeftContainer>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      PaperProps={{ sx: { maxWidth: "unset" } }}
+    >
+      <Container>
+        <LeftContainer>
+          <h2 style={{ color: "white" }}>{account.heading}</h2>
+          <TextLogin>{account.subHeading}</TextLogin>
+        </LeftContainer>
 
-          {account.view === "login" ? (
-            <RightContainer>
-              <TextField
-                variant="standard"
-                name="username"
-                onChange={(e) => loginChange(e)}
-                label=" Username"
-              />
-              <TextField
-                variant="standard"
-                name="password"
-                onChange={(e) => loginChange(e)}
-                label="Password"
-              />
-
-              <LoginBtn onClick={() => loginUser(login)}>Login</LoginBtn>
-              <Typography style={{ textAlign: "center" }}>Or</Typography>
-
-              <RequestBtn>Request Otp</RequestBtn>
-
-              <Text onClick={() => toggleSignup()}>
-                New to flipkart? Create Account
-              </Text>
-            </RightContainer>
-          ) : (
-            <RightContainer>
-              <TextField
-                variant="standard"
-                name="username"
-                onChange={(e) => inputChange(e)}
-                label="Username "
-              />
-              <TextField
-                variant="standard"
-                name="email"
-                onChange={(e) => inputChange(e)}
-                label="Email"
-              />
-              <TextField
-                variant="standard"
-                name="mobile"
-                onChange={(e) => inputChange(e)}
-                label="Mobile"
-              />
-              <TextField
-                variant="standard"
-                name="password"
-                onChange={(e) => inputChange(e)}
-                label=" Password"
-              />
-
-              <LoginBtn onClick={() => signupUser(signup)}>Continue</LoginBtn>
-            </RightContainer>
-          )}
-        </Container>
-      </Dialog>
-    </>
+        {account.view === "login" ? (
+          <RightContainer>
+            <TextField
+              variant="standard"
+              name="username"
+              value={login.username}
+              onChange={loginChange}
+              label="Username"
+              style={{ marginBottom: 15 }}
+            />
+            <TextField
+              variant="standard"
+              name="password"
+              value={login.password}
+              onChange={loginChange}
+              label="Password"
+              style={{ marginBottom: 25 }}
+            />
+            <LoginBtn onClick={loginUser}>Login</LoginBtn>
+            <Typography style={{ textAlign: "center" }}>Or</Typography>
+            <RequestBtn>Request Otp</RequestBtn>
+            <Text onClick={toggleSignup} style={{ marginTop: 25 }}>
+              New to flipkart? Create Account
+            </Text>
+          </RightContainer>
+        ) : (
+          <RightContainer>
+            <TextField
+              variant="standard"
+              name="username"
+              label="Username"
+              value={signup.username}
+              onChange={inputChange}
+              error={!!errors.username}
+              helperText={
+                <StyledHelperText>{errors.username} </StyledHelperText>
+              }
+            />
+            <TextField
+              variant="standard"
+              name="email"
+              label="Email"
+              value={signup.email}
+              onChange={inputChange}
+              error={!!errors.email}
+              helperText={<StyledHelperText>{errors.email} </StyledHelperText>}
+            />
+            <TextField
+              variant="standard"
+              name="mobile"
+              label="Mobile"
+              value={signup.mobile}
+              onChange={inputChange}
+              error={!!errors.mobile}
+              helperText={<StyledHelperText>{errors.mobile} </StyledHelperText>}
+              inputProps={{ maxLength: 10 }}
+            />
+            <TextField
+              variant="standard"
+              name="password"
+              label="Password"
+              value={signup.password}
+              onChange={inputChange}
+              error={!!errors.password}
+              helperText={
+                <StyledHelperText>{errors.password} </StyledHelperText>
+              }
+            />
+            <LoginBtn onClick={signupUser}>Continue</LoginBtn>
+          </RightContainer>
+        )}
+      </Container>
+    </Dialog>
   );
 }
 
