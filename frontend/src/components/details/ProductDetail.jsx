@@ -56,20 +56,13 @@ function ProductDetail({ product }) {
         8 Rating & 1 Reviews <img src={fassured} alt="fassured" width={"10%"} />
       </Typography>
 
-      <Typography>
-        <Box component="span" style={{ fontSize: 28 }}>
-          ₹ {product.price.cost}
-        </Box>
-        &nbsp;&nbsp;&nbsp;
-        <Box component="span" style={{ color: "#878787" }}>
+      <Box display="flex" alignItems="center" gap={2}>
+        <Typography style={{ fontSize: 28 }}>₹ {product.price.cost}</Typography>
+        <Typography color="#878787">
           <strike>₹{product.price.mrp}</strike>
-        </Box>
-        &nbsp;&nbsp;&nbsp;
-        <Box component="span" style={{ color: "#388e3c" }}>
-          {product.price.discount} 0ff
-        </Box>
-        &nbsp;&nbsp;&nbsp;
-      </Typography>
+        </Typography>
+        <Typography color="#388e3c">{product.price.discount} off</Typography>
+      </Box>
       <Offer>Available Offers</Offer>
 
       <SmallText>
@@ -100,7 +93,7 @@ function ProductDetail({ product }) {
           <ColumnText>
             <TableCell style={{ color: "#878787" }}>Delivery</TableCell>
             <TableCell style={{ fontWeight: 600 }}>
-              Delivery by {date.toDateString()} | ₹40{" "}
+              Delivery by {date.toDateString()} | ₹40
             </TableCell>
           </ColumnText>
 
@@ -122,7 +115,11 @@ function ProductDetail({ product }) {
 
           <ColumnText>
             <TableCell colSpan={2}>
-              <img src={adURL} alt="image" style={{ width: "350px" }} />
+              <img
+                src={adURL}
+                alt="image"
+                style={{ width: "100%", maxWidth: "350px" }}
+              />
             </TableCell>
           </ColumnText>
 
