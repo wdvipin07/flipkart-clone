@@ -51,6 +51,8 @@ async function main() {
   await mongoose.connect(dbUrl);
 }
 
+app.set("trust proxy", 1); // Trust first proxy for secure cookies in production
+
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   crypto: {
