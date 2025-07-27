@@ -184,13 +184,10 @@ function LoginDialog({ open, setOpen }) {
     if (!validateAllFields()) return;
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/users/signup",
-        signup,
-        {
-          withCredentials: true,
-        }
-      );
+      const API = import.meta.env.VITE_API_BASE_URL;
+      const response = await axios.post(`${API}/api/users/signup`, signup, {
+        withCredentials: true,
+      });
 
       setSignup(signupInitialValue);
       setAccount(signup.username);
@@ -209,13 +206,10 @@ function LoginDialog({ open, setOpen }) {
 
   const loginUser = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/users/login",
-        login,
-        {
-          withCredentials: true,
-        }
-      );
+      const API = import.meta.env.VITE_API_BASE_URL;
+      const response = await axios.post(`${API}/api/users/login`, login, {
+        withCredentials: true,
+      });
       setAccount(login.username);
       toast.success("User Login Successfully", {
         onClose: () => {
