@@ -191,6 +191,7 @@ function LoginDialog({ open, setOpen }) {
 
       setSignup(signupInitialValue);
       await fetchUser();
+      setAccount(signup.username); // UI instantly update ho
       setOpen(false);
       toggleAccount(accountInitialValue.login);
       toast.success("User Registered successfully");
