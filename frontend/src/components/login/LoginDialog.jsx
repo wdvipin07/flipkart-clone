@@ -114,7 +114,7 @@ function LoginDialog({ open, setOpen }) {
   const [account, toggleAccount] = useState(accountInitialValue.login);
   const [signup, setSignup] = useState(signupInitialValue);
   const [login, setLogin] = useState(loginInitialValue);
-  const { setAccount } = useContext(DataContext);
+  const { setAccount, fetchUser } = useContext(DataContext);
   const [errors, setErrors] = useState({});
 
   const handleClose = () => {
@@ -190,13 +190,10 @@ function LoginDialog({ open, setOpen }) {
       });
 
       setSignup(signupInitialValue);
-      setAccount(signup.username);
-      toast.success("User Registered successfully", {
-        onClose: () => {
-          setOpen(false);
-          toggleAccount(accountInitialValue.login);
-        },
-      });
+      await fetchUser();
+      setOpen(false);
+      toggleAccount(accountInitialValue.login);
+      toast.success("User Registered successfully");
     } catch (err) {
       toast.error(
         err.response?.data?.message || err.message || "Signup Failed"
@@ -210,13 +207,10 @@ function LoginDialog({ open, setOpen }) {
       const response = await axios.post(`${API}/api/users/login`, login, {
         withCredentials: true,
       });
-      setAccount(login.username);
-      toast.success("User Login Successfully", {
-        onClose: () => {
-          setOpen(false);
-          toggleAccount(accountInitialValue.login);
-        },
-      });
+      await fetchUser();
+      setOpen(false);
+      toggleAccount(accountInitialValue.login);
+      toast.success("User Login Successfully");
     } catch (err) {
       toast.error(err.response?.data?.message || err.message || "Login Failed");
     }

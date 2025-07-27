@@ -6,26 +6,29 @@ export const DataContext = createContext(null);
 function DataProvider({ children }) {
   const [account, setAccount] = useState("");
 
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const API = import.meta.env.VITE_API_BASE_URL;
-        const res = await axios.get(`${API}/auth/user`, {
-          withCredentials: true,
-        });
-        if (res.data?.user) {
-          setAccount(res.data.user.username);
-        }
-      } catch (err) {
-        // Not logged in, no action
+  // Always fetch user from backend
+  const fetchUser = async () => {
+    try {
+      const API = import.meta.env.VITE_API_BASE_URL;
+      const res = await axios.get(`${API}/api/users/auth/user`, {
+        withCredentials: true,
+      });
+      if (res.data?.user) {
+        setAccount(res.data.user.username);
+      } else {
+        setAccount("");
       }
-    };
+    } catch {
+      setAccount("");
+    }
+  };
 
-    checkSession();
+  useEffect(() => {
+    fetchUser();
   }, []);
 
   return (
-    <DataContext.Provider value={{ account, setAccount }}>
+    <DataContext.Provider value={{ account, setAccount, fetchUser }}>
       {children}
     </DataContext.Provider>
   );

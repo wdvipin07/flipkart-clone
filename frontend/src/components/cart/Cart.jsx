@@ -64,7 +64,8 @@ function Cart() {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/create-order`,
-        data
+        data,
+        { withCredentials: true }
       );
       console.log(response.data);
       window.location.href = response.data.url;

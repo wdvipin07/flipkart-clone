@@ -7,6 +7,6 @@ import {
 //Router Object
 const router = express.Router();
 
-router.post("/create-order", addPaymentGateway);
+router.post("/create-order", isLoggedIn, addPaymentGateway);
 router.post("/status", addStatus);
 export default router;

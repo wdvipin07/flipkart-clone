@@ -1,13 +1,16 @@
 import User from "../models/User.js";
 import passport from "passport";
 
-export const signupControlller = async (req, res) => {
+export const signupControlller = async (req, res, next) => {
   try {
     let { username, email, mobile, password } = req.body;
     const newUser = new User({ username, email, mobile });
     const registerUser = await User.register(newUser, password);
-    console.log(registerUser);
-    res.status(200).json({ message: "Ragistration Successful" });
+    // Signup and just login
+    req.login(registerUser, (err) => {
+      if (err) return next(err);
+      res.status(200).json({ message: "Registration & Login Successful" });
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -42,7 +45,7 @@ export const logoutController = (req, res) => {
 //auth Controller
 export const authController = (req, res) => {
   if (req.isAuthenticated()) {
-    res.json({ user: req.user }); // ✅ React me yeh use hoga
+    res.json({ user: req.user }); //  React me yeh use hoga
   } else {
     res.status(401).json({ message: "Not authenticated" });
   }
