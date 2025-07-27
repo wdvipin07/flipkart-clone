@@ -63,7 +63,7 @@ store.on("error", () => {
   console.log("ERROR in MONGO SESSION STORE", err);
 });
 
-// Session configuration
+// Session configuration (dynamic for prod/local)
 const sessionOption = {
   store,
   secret: process.env.SECRET || "keyboard cat",
