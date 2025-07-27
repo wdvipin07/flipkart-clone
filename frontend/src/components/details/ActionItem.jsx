@@ -52,7 +52,7 @@ function ActionItem({ product }) {
     };
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/payments/create-order",
+        `${import.meta.env.VITE_API_BASE_URL}/api/payments/create-order`,
         data
       );
       console.log(response.data);

@@ -9,7 +9,8 @@ function DataProvider({ children }) {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/auth/user", {
+        const API = import.meta.env.VITE_API_BASE_URL;
+        const res = await axios.get(`${API}/auth/user`, {
           withCredentials: true,
         });
         if (res.data?.user) {

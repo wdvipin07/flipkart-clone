@@ -63,7 +63,7 @@ function Cart() {
     };
     try {
       const response = await axios.post(
-        "http://localhost:3000/create-order",
+        `${import.meta.env.VITE_API_BASE_URL}/create-order`,
         data
       );
       console.log(response.data);

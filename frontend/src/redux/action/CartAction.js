@@ -4,7 +4,7 @@ import * as actionType from "../constant/CartConstant";
 export const addToCart = (id, quantity) => async (dispatch) => {
   try {
     const { data } = await axios.get(
-      `http://localhost:3000/api/products/${id}`
+      `${import.meta.env.VITE_API_BASE_URL}/api/products/${id}`
     );
     dispatch({ type: actionType.ADD_TO_CART, payload: { ...data, quantity } });
   } catch (err) {

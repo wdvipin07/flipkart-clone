@@ -49,7 +49,8 @@ function Profile({ account }) {
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:3000/api/users/logout", {
+      const API = import.meta.env.VITE_API_BASE_URL;
+      await axios.get(`${API}/api/users/logout`, {
         withCredentials: true,
       });
       setAccount(""); // user ko logout karna (context update)
