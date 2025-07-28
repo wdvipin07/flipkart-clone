@@ -13,9 +13,8 @@ const MERCHANT_STATUS_URL =
 //redirecturl
 const redirectUrl = "https://flipkart-clone-5.onrender.com/api/payments/status";
 
-const successUrl = "https://flipkart-clone-5-frontend.onrender.com/";
-const failureUrl =
-  "https://flipkart-clone-5-frontend.onrender.com/payment-failure";
+const successUrl = "https://flipkart-clone-5.onrender.com/";
+const failureUrl = "https://flipkart-clone-5.onrender.com/payment-failure";
 
 export const addPaymentGateway = async (req, res) => {
   const { name, mobileNumber, amount } = req.body;
