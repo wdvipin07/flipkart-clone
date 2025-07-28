@@ -48,7 +48,7 @@ function ActionItem({ product }) {
     let data = {
       name: "vipin",
       mobileNumber: "123456789",
-      amount: 100,
+      amount: product.price.cost,
     };
     try {
       const response = await axios.post(

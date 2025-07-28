@@ -11,10 +11,11 @@ const MERCHANT_BASE_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox";
 const MERCHANT_STATUS_URL =
   "https://api-preprod.phonepe.com/apis/pg-sandbox/status";
 //redirecturl
-const redirectUrl = "http://localhost:3000/api/payments/status";
+const redirectUrl = "https://flipkart-clone-5.onrender.com/api/payments/status";
 
-const successUrl = "http://localhost:5173/";
-const failureUrl = "http://localhost:5173/payment-failure";
+const successUrl = "https://flipkart-clone-5-frontend.onrender.com/";
+const failureUrl =
+  "https://flipkart-clone-5-frontend.onrender.com/payment-failure";
 
 export const addPaymentGateway = async (req, res) => {
   const { name, mobileNumber, amount } = req.body;
