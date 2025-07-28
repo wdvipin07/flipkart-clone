@@ -1,6 +1,9 @@
 import React, { Component } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 import { Box, styled, Grid, Typography, Button } from "@mui/material";
 
@@ -54,16 +57,34 @@ const LeftComponent = styled(Grid)(({ theme }) => ({
 function Cart() {
   const { cartItems } = useSelector((state) => state.cart);
 
+  const [price, setPrice] = useState(0);
+  const [discount, setDiscount] = useState(0);
+
+  useEffect(() => {
+    totalAmount();
+  }, [cartItems]);
+
+  const totalAmount = () => {
+    let price = 0,
+      discount = 0;
+    cartItems.map((item) => {
+      price = price + item.price.mrp;
+      discount += item.price.mrp - item.price.cost;
+    });
+    setPrice(price);
+    setDiscount(discount);
+  };
+
   //Check Out
-  const buyNow = async () => {
+  const placeOrder = async () => {
     let data = {
       name: "vipin",
       mobileNumber: "123456789",
-      amount: 100,
+      amount: price - discount + 40,
     };
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/create-order`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/payments/create-order`,
         data,
         { withCredentials: true }
       );
@@ -71,6 +92,7 @@ function Cart() {
       window.location.href = response.data.url;
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -88,7 +110,7 @@ function Cart() {
             ))}
 
             <ButtonWrapper>
-              <StyledBtn onClick={() => buyNow()}>Place Order</StyledBtn>
+              <StyledBtn onClick={placeOrder}>Place Order</StyledBtn>
             </ButtonWrapper>
           </LeftComponent>
           <Grid size={{ lg: 4, md: 4, sm: 12, xs: 12 }}>
