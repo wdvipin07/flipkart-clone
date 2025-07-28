@@ -94,14 +94,14 @@ app.use("/api/products", productRouter);
 app.use("/api/payments", paymentRouter);
 
 // React Frontend Serve Code (For Deployment)
-if (process.env.NODE_ENV === "production") {
-  // Serve the static files from React's production build
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-  // Catch-all route to serve index.html for any request
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
-  });
-}
+// if (process.env.NODE_ENV === "production") {
+// Serve the static files from React's production build
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+// Catch-all route to serve index.html for any request
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
+});
+// }
 
 // Server Listen
 const PORT = process.env.PORT || 3000;
