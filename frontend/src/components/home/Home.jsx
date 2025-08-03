@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 // Styled Components
 const NavComponent = styled(Box)(({ theme }) => ({
   background: "#f2f2f2",
-  padding: "10px 10px 0 10px",
+  padding: "10px 0px 0 0px",
   [theme.breakpoints.down("sm")]: {
     marginTop: "35px",
   },
@@ -24,7 +24,7 @@ const NavComponent = styled(Box)(({ theme }) => ({
 
 const Container = styled(Box)`
   background: #f2f2f2;
-  padding: 15px 10px 15px 10px;
+  padding: 15px 0px;
 `;
 
 function Home() {
@@ -61,7 +61,6 @@ function Home() {
         <MidSlide products={smartphones} title={"Best Deal on Smart Phones"} />
         <Slide products={smartWatches} title={"Discount for you"} />
         <MidSection />
-        <Slide products={laptops} title={"Branded Laptops "} />
         <Slide products={fashion} title={"start from only 499"} />
         <MidSection />
         <Slide products={headphones} title={"Headphones & Airbuds "} />

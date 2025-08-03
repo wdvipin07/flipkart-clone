@@ -18,9 +18,9 @@ const SearchContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
     position: "absolute",
     top: 64,
-    left: 4,
+    left: -2,
     background: "white",
-    width: "92%",
+    width: "95%",
   },
 }));
 
